@@ -23,7 +23,6 @@ import Mycroft 1.0 as Mycroft
 
 Kirigami.AbstractListItem {
     id: contactDelegate
-    backgroundColor: Qt.rgba(0, 0, 0, 1)
     
     contentItem: Item {
         implicitWidth: delegateLayout.implicitWidth;
@@ -36,21 +35,21 @@ Kirigami.AbstractListItem {
                 top: parent.top;
                 right: parent.right;
             }
-            spacing: Math.round(Kirigami.Units.gridUnit / 2)
+            spacing: Math.round(units.gridUnit / 2)
 
             Image {
                 id: contactIcon
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                Layout.preferredHeight: Kirigami.Units.iconSizes.medium
-                Layout.preferredWidth: Kirigami.Units.iconSizes.medium
-                source: "images/avatar.png"
+                Layout.preferredHeight: units.iconSizes.medium
+                Layout.preferredWidth: units.iconSizes.medium
+                source: "../images/avatar.png"
             }
 
             Kirigami.Heading {
                 id: contactNameLabel
                 level: 2
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
-                color: "white"
+                color: Kirigami.Theme.textColor
                 elide: Text.ElideRight
                 text: name
                 textFormat: Text.PlainText
@@ -59,7 +58,7 @@ Kirigami.AbstractListItem {
             Label {
                 id: contactUrlLabel
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
-                color: "white"
+                color: Kirigami.Theme.textColor
                 opacity: 0.8
                 elide: Text.ElideRight
                 text: url
@@ -70,5 +69,9 @@ Kirigami.AbstractListItem {
     
     onClicked: {
         triggerGuiEvent("voip.jarbas.callContact", {"contact": name})
+    }
+    
+    Keys.onReturnPressed: {
+        clicked()
     }
 }

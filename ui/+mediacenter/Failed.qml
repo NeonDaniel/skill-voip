@@ -22,53 +22,20 @@ import org.kde.kirigami 2.8 as Kirigami
 import Mycroft 1.0 as Mycroft
 
 Item {
-    id: disconnectedView
+    id: failedView
             
     Rectangle {
-        id: l1
+        id: failBackground
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: -Kirigami.Units.largeSpacing
-        height: parent.height / 2
+        height: parent.height
         color: "#057cfc"
         clip: true
-                        
-        Rectangle {
-            width: parent.width * 0.28
-            height: width
-            color: "transparent"
-            border.width: 4
-            border.color: Kirigami.Theme.backgroundColor
-            radius: 1000
-            clip: true
-            anchors.centerIn: parent
-        }
         
-        Rectangle {
-            width: parent.width * 0.35
-            height: parent.height * 0.40
-            color: "transparent"
-            border.width: 4
-            border.color: Kirigami.Theme.backgroundColor
-            anchors.bottomMargin: -Kirigami.Units.gridUnit * 2
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            radius: Kirigami.Units.gridUnit * 2
-            clip: true
-        }
-    }
-        
-    Item {
-        id: bottomAreaA
-        anchors.top: l1.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.topMargin: Kirigami.Units.largeSpacing
-
         Button {
-            id: callDisconnected
+            id: notLoggedIn
             anchors.bottom: parent.bottom
             anchors.bottomMargin: Kirigami.Units.largeSpacing
             width: parent.width
@@ -86,14 +53,14 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     width: parent.height * 0.75
                     height: width
-                    source: "images/disconnected.png" 
+                    source: "images/avatar.png" 
                 }
                 Label {
                     id: connectionTextHeading
                     wrapMode: Text.WordWrap
                     anchors.centerIn: parent
                     font.bold: true
-                    text: "Call Disconnected"
+                    text: "SIP Login Failed"
                     color: Kirigami.Theme.textColor
                 }
             }

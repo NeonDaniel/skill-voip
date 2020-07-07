@@ -99,6 +99,9 @@ class SIPSkill(FallbackSkill):
         self.gui.register_handler("voip.jarbas.hangCall", self.hang_call)
         self.gui.register_handler("voip.jarbas.muteCall", self.mute_call)
         self.gui.register_handler("voip.jarbas.unmuteCall", self.unmute_call)
+        self.gui.register_handler("voip.jarbas.callContact", self.handle_call_contact_from_gui)
+        self.gui.register_handler("voip.jarbas.updateConfig", self.handle_config_from_gui)
+        self.add_event('skill--voip.jarbasskills.home', self.show_homescreen)
         
     def _on_web_settings_change(self):
         # TODO settings should be uploaded to backend when changed inside
@@ -355,7 +358,6 @@ class SIPSkill(FallbackSkill):
         contact = self.contacts.get_contact(name)
         if contact is not None:
             self.gui["currentContact"] = name
-            self.handle_gui_state("Outgoing")
             self.speak_dialog("calling", {"contact": name}, wait=True)
             self.intercepting_utterances = True
             address = contact["url"]
@@ -505,7 +507,40 @@ class SIPSkill(FallbackSkill):
         else:
             self.gui["pageState"] = state
             self.gui.show_page("voipLoader.qml", override_idle=True)
-
+            
+    # Handle GUI Show Home
+    @intent_file_handler("show_home.intent")
+    def show_homescreen(self):
+        self.handle_gui_state("Homescreen")
+        
+    # Handle Config From GUI
+    def handle_config_from_gui(self, message):
+        if message.data["type"] is not "SipXCom":
+            self.settings["user"] = message.data["username"]
+            self.settings["gateway"] = message.data["gateway"]
+            self.settings["password"] = message.data["password"]
+        else:
+            self.settings["sipxcom_user"] = message.data["username"]
+            self.settings["sipxcom_gateway"] = message.data["gateway"]
+            self.settings["sipxcom_password"] = message.data["password"]
+        self.sip.quit()
+        self.sip = None
+        self.handle_restart({})
+        
+    # Handle Contact Calling From GUI
+    def handle_call_contact_from_gui(self, message):
+        if self.sip is not None:
+            self.handle_gui_state("Outgoing")
+            self.handle_call_contact(message)
+        else:
+            self.handle_call_failure_gui()
+            
+    # Handle Failure
+    def handle_call_failure_gui(self):
+        self.handle_gui_state("Failed")
+        sleep(3)
+        self.handle_gui_state("Clear")
+            
 # SIPXCOM integration
 
 def etree2dict(t):
